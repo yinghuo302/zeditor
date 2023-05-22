@@ -4,11 +4,14 @@ import "../assets/css/md-github.css"
 import "../assets/css/katex.min.css"
 import "../assets/css/vs.css"
 import "../assets/css/md-base.css"
+import { DOMUtil } from "../utils";
+import { AlignCtr, updateTable } from "./tablectr";
 export class ZEditor implements IEditor{
 	root_ele:HTMLDivElement;
 	container:HTMLDivElement
 	old_cursor:ICursor;
 	tem_cursor:ICursor;
+	range:Range
 	constructor(ele:HTMLDivElement){
 		this.root_ele = ele
 		this.root_ele.classList.add('md-root');
@@ -36,28 +39,76 @@ export class ZEditor implements IEditor{
  		headings.forEach((heading)=>{
 			ret.push({
 				level: parseInt(heading.tagName.substring(1)),
-				title: MdRender.toMd(heading)
+				title: MdRender.toMd(heading as HTMLElement)
 			})
 		})
 		return ret
 	}
 	setHeading(level: number) {
-		console.log(this.tem_cursor)
-		console.log(this.old_cursor)
+		if(this.range.startContainer!=this.range.endContainer) return
+		let line_node = DOMUtil.getLineNode(this.range.startContainer)
+		if(line_node.tagName=='P'){
+			let text_node = document.createTextNode('#'.repeat(level)+' ')
+			line_node.prepend(text_node)
+			this.tem_cursor.offset += (level+1)
+		}
 	}
 	setInlineFormat(format:InlineFormat){
-
+		if(this.range.startContainer!=this.range.endContainer) return
+		if(format=='img'||format=='link'){
+			if(this.range.startOffset!=this.range.endOffset) return 
+			let str = format=='img'? '![]()' : '[]()'
+			let text_node = document.createTextNode(str)
+			this.range.insertNode(text_node)
+		}
+		let str = this.range.startContainer.textContent.
+			substring(this.range.startOffset,this.range.endOffset);
+		let text_node = document.createTextNode( format + str + format);
+		this.range.deleteContents()
+		this.range.insertNode(text_node)
 	}
 	setBlockFormat(format:BlockFormat){
-
+		if(this.range.startContainer!=this.range.endContainer) return
+		let line_node = DOMUtil.getLineNode(this.range.startContainer)
+		if(format=='code'){
+			let pre = DOMUtil.createDOM('pre','','<pre></pre>')
+			line_node.insertAdjacentElement('afterend',pre)
+		} else if(line_node.tagName=='P'){
+			let str = MdRender.toMd(line_node)
+			if(format=='ol') str = "1. "+str
+			if(format=='ul') str = "+ "+str
+			if(format=='quote') str = "> "+str
+			line_node.replaceWith(MdRender.renderLine(str))
+		}
 	}
 	alterTable(row:number,col:number){
-
+		if(this.range.startContainer!=this.range.endContainer) return ;
+		let table = DOMUtil.closestParents(this.range.startContainer,
+			(node:HTMLElement)=>node.tagName=='TABLE')
+		if(table) updateTable(table as HTMLTableElement ,row,col)
+	}
+	createTable(row:number,col:number){
+		if(this.range.startContainer!=this.range.endContainer) return ;
+		let line_node=DOMUtil.getLineNode(this.range.startContainer)
+		let table = document.createElement('table')
+		let str = ''
+		for(let i=0;i<row;i++){
+			str += "<tr>"
+			for(let j=0;j<col;j++)
+				str += i==0? `<th><p class="md-line"></p></th>` :`<td><p class="md-line"></p></td>`
+			str +=  "</tr>"
+		}
+		table.innerHTML = str
+		line_node.insertAdjacentElement('afterend',table)
 	}
 	alignTableItem(align:string){
+		let table = DOMUtil.closestParents(this.range.startContainer,
+			(node:HTMLElement)=>node.tagName=='TH'||node.tagName=='TD')
+		// AlignCtr(table,0,align)
+	}
+	deleteTable(){
 
 	}
-	
 }
 
 export default ZEditor;

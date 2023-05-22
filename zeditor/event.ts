@@ -12,12 +12,12 @@ export class EventCenter{
 	}
 	static keyupHandler(editor:IEditor,e:KeyboardEvent){
 		if(e.key=='ArrowUp'||e.key=='ArrowDown'||e.key=='ArrowLeft')
-			cursorCtr(editor,getCursor());
+			cursorCtr(editor);
 		if(e.key=='ArrowRight')
-			cursorCtr(editor,getCursor(),false);
+			cursorCtr(editor,false);
 	}
 	static clickHandler(editor:IEditor,e:Event){
-		cursorCtr(editor,getCursor())
+		cursorCtr(editor)
 	}
 	static keydownHandler(editor:IEditor,e:KeyboardEvent){
 		if(e.key==='Enter')
@@ -58,14 +58,11 @@ export class EventCenter{
 			line = line.firstElementChild as HTMLElement
 			setCursorByOffset(editor,line,0)
 		}else{
-			console.log(mdtext,mdtext.length,offset,mdtext.substring(offset))
 			let new_line = MdRender.renderLine(mdtext.substring(offset))
 			line_node.insertAdjacentElement('afterend',new_line)
 			line_node.replaceWith(line)
-			console.log(line,new_line)
 			setCursorByOffset(editor,new_line,0)
 		}
-		console.log(editor.tem_cursor)
 		focus(editor)
 	}
 	// TODO: debounce
@@ -77,11 +74,9 @@ export class EventCenter{
 			!cursor.node.parentElement?.classList.contains('md-show')) 
 			return ;
 		const offset = getOffset(line_node,cursor)
-		console.log(line_node,offset)
 		let new_node = renewLine(line_node);
 		line_node.replaceWith(new_node);
 		setCursorByOffset(editor,new_node,offset);
-		console.log(editor.tem_cursor)		
 		focus(editor);
 	}
 

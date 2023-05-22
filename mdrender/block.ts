@@ -1,4 +1,4 @@
-import {MdRender} from './index';
+import {convert, MdRender} from './index';
 export const renderUList = function(lines:string[],index:number):RenderInfo|null{
 	var line = lines[index];
 	if(isUl(line)){
@@ -16,7 +16,7 @@ export const renderUList = function(lines:string[],index:number):RenderInfo|null
 					break;
 				++index;
 			}
-			item.append(...MdRender.convert(arr));
+			item.append(...convert(arr));
 			list.appendChild(item);
 		}
 		return {val:list,end:index};
@@ -41,7 +41,7 @@ export const renderOList = function(lines:string[],index:number):RenderInfo|null
 					break;
 				++index;
 			}
-			item.append(...MdRender.convert(arr));
+			item.append(...convert(arr));
 			list.appendChild(item);
 		}
 		return {val:list,end:index};
@@ -58,7 +58,7 @@ export const renderQuote = function(lines:string[],index:number):RenderInfo|null
 			++index;
 			line = lines[index];
 		}
-		node.append(...MdRender.convert(arr))
+		node.append(...convert(arr))
 		return {val:node,end:index};
     }
 	return null;

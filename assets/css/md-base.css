@@ -36,3 +36,10 @@ body {
 .md-root blockquote:empty::before, .md-root pre>code:empty::before, .md-root p:empty::before, .md-root h1:empty::after, .md-root h2:empty::after, .md-root h3:empty::after, .md-root h4:empty::after, .md-root h5:empty::after, .md-root h6:empty::after{
 	content: ' ';
 }
+
+.md-root ol {
+	list-style:decimal !important;
+}
+.md-root ul{
+	list-style: circle !important;
+}

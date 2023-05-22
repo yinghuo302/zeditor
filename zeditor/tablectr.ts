@@ -1,3 +1,5 @@
+import { DOMUtil } from "../utils";
+
 export const AlignCtr = (table:HTMLTableElement,num:number,align:string) =>{
 	const row = table.rows.length;
 	const col = table.rows[0].cells.length;
@@ -20,7 +22,7 @@ export const updateTable = (table:HTMLTableElement,row:number,column:number) => 
 		for(let i=0;i<oldRow;++i){
 			if(columnDiff>0)
 				for(let j=0;j<columnDiff;++j)
-					table.rows[i].appendChild(document.createElement('td'));
+					table.rows[i].appendChild(DOMUtil.createDOM(i==0?'th':'td','',`<p class="md-line"></p>`));
 			else
 				for(let j=0;j<columnDiff;++j)
 					table.rows[i].cells[oldColumn-j-1].remove();
@@ -32,7 +34,7 @@ export const updateTable = (table:HTMLTableElement,row:number,column:number) => 
 			for(let i=0;i<row_diff;++i){
 				var tr = document.createElement('tr');
 				for(let j=0;j<column;++j)
-					tr.appendChild(document.createElement('td'));
+					tr.appendChild(DOMUtil.createDOM('td','',`<p class="md-line"></p>`));
 				table.appendChild(tr);
 			}
 		}

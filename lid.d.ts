@@ -12,6 +12,7 @@ interface IEditor{
 	root_ele:HTMLDivElement;
 	old_cursor:ICursor;
 	tem_cursor:ICursor;
+	range:Range
 	setValue(mdtext:string):void
 	getMd():string
 	getOutline():IOutLine[]
@@ -21,6 +22,8 @@ interface IEditor{
 	getRoot():HTMLDivElement
 	alignTableItem(align:string)
 	getDescription():string
+	alterTable(row:number,col:number):void
+	createTable(row:number,col:number):void
 }
 
 
@@ -39,6 +42,6 @@ interface LineInfo{
 	offset:number;
 }
 
-type InlineFormat = "bold"|"em"|"bold-em"|"link"|"img"|"del"|"code"|"math"
+type InlineFormat = "**"|"*"|"***"|"~"|"`"|"$"|"link"|"img"
 type BlockFormat = "ol"|"ul"|"code"|"math"|"quote"
 type TableAlignType = ""

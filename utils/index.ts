@@ -1,12 +1,4 @@
 export namespace DOMUtil{
-	export const createInput = function(type:string,placeholder:string,id:string,_class:string):HTMLInputElement {
-		let input = document.createElement("input")
-		input.type = type
-		input.placeholder = placeholder
-		input.id = id
-		input.className = _class
-		return input
-	}
 	
 	export const closestParent = function(node:Node,className:string):null|HTMLElement{
 		if (!node)  return null;
@@ -18,6 +10,19 @@ export namespace DOMUtil{
 		}
 		return null
 	}
+
+	export const closestParents = function(node:Node,check:(HTMLElement)=>boolean):null|HTMLElement{
+		if (!node)  return null;
+		if (node.nodeType === 3) node = node.parentElement as HTMLElement;
+		let e = node as HTMLElement;
+		while(e){
+			if(check(e)) return e;
+			e = e.parentElement as HTMLElement
+		}
+		return null
+	}
+
+
 	export const  createDOM = function(tagName:string,className?:string,content?:string):HTMLElement{
 		let span = document.createElement(tagName)
 		if(className&&className!="") span.className = className
@@ -41,17 +46,18 @@ export namespace DOMUtil{
 	export const  nextNode = function(node:Node):null|HTMLElement{
 		return null
 	}
-	export const  previousNode =function (node:Node):null|HTMLElement{
+	export const  previousNode =function (node:Node):HTMLElement{
 		return null
 	}
 
-	export const getLineNode = function(node:Node){
+	export const getLineNode = function(node:Node) :HTMLElement{
 		let parent = node.parentElement as HTMLElement
-		while(parent&&parent.tagName!='li'){
+		while(parent&&parent.tagName!='li'&&!parent.classList.contains('md-root')){
+			if((node as HTMLElement).classList.contains('md-line')) return node as HTMLElement
 			node = parent
 			parent = parent.parentElement as HTMLElement
 		}
-		return node
+		return node as HTMLElement
 	}
 
 	export const  checkNode = function(node:Node):number{
@@ -66,17 +72,6 @@ export namespace DOMUtil{
 		return MD_NODE;
 	}
 
-	export const  focus = function(cursor:ICursor) {
-		var range = document.createRange();
-		range.setStart(cursor.node,cursor.offset);
-		range.collapse(true);
-		var selection = document.getSelection() as Selection;
-		selection.removeAllRanges();
-		selection.addRange(range);
-	}
-	export const removeNode = function(node:HTMLElement){
-		(node.parentElement as HTMLElement).removeChild(node)
-	}
 	export const LINE_NODE = 4
 	export const MD_NODE = 2
 	export const TEXT_NODE = 1

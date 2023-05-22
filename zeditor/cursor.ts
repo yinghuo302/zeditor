@@ -17,12 +17,15 @@ export const focus = function(editor:IEditor){
 	var selection = document.getSelection() as Selection;
 	selection.removeAllRanges();
 	selection.addRange(range);
+	editor.range = range.cloneRange();
 	editor.old_cursor = editor.tem_cursor;
 	editor.tem_cursor = null;
 }
 
-export const cursorCtr = (editor:IEditor,cursor:ICursor,left:boolean = true)=>{
-	if(!cursor) return 
+export const cursorCtr = (editor:IEditor,left:boolean = true)=>{
+	editor.range = document.getSelection().getRangeAt(0).cloneRange();
+	if(!editor.range.collapsed) return;
+	let cursor = {node:editor.range.endContainer,offset: editor.range.endOffset};
 	let katex_node = DOMUtil.closestParent(cursor.node,'katex')
 	if(katex_node){
 		katex_node = katex_node.parentElement
