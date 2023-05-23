@@ -68,9 +68,10 @@ export const blockToMd = function(node:HTMLElement):string[] {
 		let html = node as HTMLElement
 		let tag = html.tagName
 		if(tag=='PRE') ret.push(...preToMd(html))
-		if(tag=='UL'||tag=='OL') ret.push(...listToMd(html))
-		if(tag=='TABLE') ret.push(...tableToMd(html as HTMLTableElement))
-		if(tag=='QUOTE') ret.push(...quoteToMd(html))
+		else if(tag=='UL'||tag=='OL') ret.push(...listToMd(html))
+		else if(tag=='TABLE') ret.push(...tableToMd(html as HTMLTableElement))
+		else if(tag=='BLOCKQUOTE') ret.push(...quoteToMd(html))
+		else ret.push(lineToMd(node))
 	}
 	return ret
 }

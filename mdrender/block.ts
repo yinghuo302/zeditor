@@ -50,13 +50,16 @@ export const renderOList = function(lines:string[],index:number):RenderInfo|null
 }
 export const renderQuote = function(lines:string[],index:number):RenderInfo|null{
 	var line = lines[index];
-	if(line.slice(0,2)==='> '){
+	if(line.charAt(0)=='>' &&(line.charCodeAt(1)==32||line.charCodeAt(1)==160)){
         var node = document.createElement('blockquote');
-		var arr:string[];
-		while(line.slice(0,2)==='> '){
+		var arr:string[] = [];
+		arr.push(line.substring(2));
+		++index;
+		while(index<lines.length){
+			line = lines[index];
+			if(line.slice(0,2)!='> ') break ;
 			arr.push(line.slice(2));
 			++index;
-			line = lines[index];
 		}
 		node.append(...convert(arr))
 		return {val:node,end:index};

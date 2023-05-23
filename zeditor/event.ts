@@ -1,6 +1,6 @@
 import { MdRender } from "../mdrender/index";
 import { cursorCtr, focus, getCursor, getOffset, setCursorByOffset } from "./cursor";
-import { renewLine, renewLineWithEnter } from "./renew";
+import { insertNewLine, renewLine, renewLineWithEnter } from "./renew";
 import { DOMUtil } from "../utils/index";
 export class EventCenter{
 	static keyword = "#*$~`> ![]()+-0123456789 ";
@@ -38,31 +38,25 @@ export class EventCenter{
 		setCursorByOffset(editor,new_line,offset)
 		focus(editor)
 	}
+
+	//  table,ul,ol,blockquote,pre
 	static enterHandler(editor:IEditor,e:KeyboardEvent){
 		var cursor = getCursor();
 		var line_node = DOMUtil.closestParent(cursor.node,'md-line');
 		let tagName = line_node.tagName
-		if(tagName=='PRE')
-			return ;
+		if(tagName=='PRE') return
 		e.preventDefault()
 		const mdtext = MdRender.toMd(line_node);
 		const offset = getOffset(line_node,cursor)
 		let line = renewLineWithEnter(mdtext.substring(0,offset))
 		tagName = line.tagName
-		if(tagName=='TABLE'){
-
-		}
-		// TODO: ```c++<cursor>df
-		else if(tagName=='PRE'){
-			line_node.replaceWith(line)
-			line = line.firstElementChild as HTMLElement
-			setCursorByOffset(editor,line,0)
-		}else{
-			let new_line = MdRender.renderLine(mdtext.substring(offset))
-			line_node.insertAdjacentElement('afterend',new_line)
-			line_node.replaceWith(line)
-			setCursorByOffset(editor,new_line,0)
-		}
+		line_node.replaceWith(line)
+		if(tagName=='TABLE')
+			setCursorByOffset(editor,(line as HTMLTableElement).firstChild.firstChild.firstChild as HTMLElement,0)
+		else if(tagName=='PRE')
+			setCursorByOffset(editor,line.firstChild as HTMLElement,0)
+		let new_line = insertNewLine(line,mdtext.substring(offset))
+		setCursorByOffset(editor,new_line,0)
 		focus(editor)
 	}
 	// TODO: debounce
@@ -81,7 +75,7 @@ export class EventCenter{
 	}
 
 	static checkInput(e:InputEvent):boolean{
-		if(e.inputType==='insertText'&&e.data.length<5){
+		if(e.data&&e.data.length<5){
 			let str = e.data;
 			for(let i=0;i<str.length;++i)
 				if(EventCenter.keyword.indexOf(str[i])!=-1)

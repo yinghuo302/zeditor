@@ -3,11 +3,34 @@ import hljs from "highlightjs";
 import "../assets/css/vs.css"
 import { DOMUtil } from "../utils/index";
 
-
-export const insertNewLine = function(node:HTMLElement){
-	
+// insert new line after node
+export const insertNewLine = function(node:HTMLElement,mdtext:string,position:string = 'afterend'):HTMLElement{
+	let node1 = MdRender.renderLine(mdtext)
+	if(node.tagName=='LI'){
+		let line = document.createElement('li')
+		line.appendChild(node1)
+		node.insertAdjacentElement('afterend',line)
+		return line
+	}
+	if(node.tagName=='PRE'){
+		console.log(node.parentElement)
+		if(node.parentElement.tagName!='PRE'){
+			node.insertAdjacentElement('afterend',node1)
+			console.log("test")
+		}
+		return node1
+	}
+	node.insertAdjacentElement('afterend',node1)
+	return node1
 }
+// 将当前行提升一个等级
+export function promoteLine(node:HTMLElement){
+	let parentElement = node.parentElement
+	if(parentElement.classList.contains('md-root')) return 
+	let mdtext = MdRender.toMd(node)
+	insertNewLine(parentElement,mdtext)
 
+}
 
 export const renewLineWithEnter = function(mdtext:string):HTMLElement{
 	if(mdtext[0]=='|'||mdtext[mdtext.length-1]=='|'){
@@ -31,7 +54,7 @@ export const renewLineWithEnter = function(mdtext:string):HTMLElement{
 		table.appendChild(tr);
 		tr = document.createElement('tr');
 		while(col>0){
-			tr.appendChild(document.createElement('td'));
+			tr.appendChild(DOMUtil.createDOM('td','',`<p class='md-line'></p>`));
 			--col;
 		}
 		table.appendChild(tr);
@@ -47,9 +70,8 @@ export const renewLineWithEnter = function(mdtext:string):HTMLElement{
 }
 
 
-export const renewLine = function(node:HTMLElement){
-	let tagName = node.tagName
-	if(tagName=='PRE'){
+export const renewLine = function(node:HTMLElement):HTMLElement{
+	if(node.tagName=='PRE'){
 		var lang = node.parentElement.className;
 		let pre = DOMUtil.createDOM('pre','md-line')
 		if(lang=='')

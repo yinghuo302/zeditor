@@ -31,7 +31,7 @@ export class ZEditor implements IEditor{
 		return MdRender.toMd(this.root_ele);
 	}
 	getDescription(): string {
-		return("这是一个演示");
+		return("这是一个描述");
 	}
 	getOutline(): IOutLine[] {
 		let headings = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
@@ -107,7 +107,10 @@ export class ZEditor implements IEditor{
 		// AlignCtr(table,0,align)
 	}
 	deleteTable(){
-
+		if(this.range.startContainer!=this.range.endContainer) return ;
+		let table = DOMUtil.closestParents(this.range.startContainer,
+			(node:HTMLElement)=>node.tagName=='TABLE')
+		if(table) table.remove()
 	}
 }
 
