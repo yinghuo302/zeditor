@@ -6,6 +6,7 @@ import "../assets/css/vs.css"
 import "../assets/css/md-base.css"
 import { DOMUtil } from "../utils";
 import { AlignCtr, updateTable } from "./tablectr";
+import { insertNewLine, promoteLine } from "./renew";
 export class ZEditor implements IEditor{
 	root_ele:HTMLDivElement;
 	container:HTMLDivElement
@@ -111,6 +112,21 @@ export class ZEditor implements IEditor{
 		let table = DOMUtil.closestParents(this.range.startContainer,
 			(node:HTMLElement)=>node.tagName=='TABLE')
 		if(table) table.remove()
+	}
+	insertNewLineBefore(){
+		if(this.range.startContainer!=this.range.endContainer) return
+		let line_node = DOMUtil.getLineNode(this.range.startContainer)
+		insertNewLine(line_node,"",'beforebegin')
+	}
+	insertNewLineAfter(){
+		if(this.range.startContainer!=this.range.endContainer) return
+		let line_node = DOMUtil.getLineNode(this.range.startContainer)
+		insertNewLine(line_node,"",'afterend')
+	}
+	promoteLine(){
+		if(this.range.startContainer!=this.range.endContainer) return
+		let line_node = DOMUtil.getLineNode(this.range.startContainer)
+		promoteLine(line_node)
 	}
 }
 

@@ -1,3 +1,4 @@
+import { DOMUtil } from '../utils';
 import {convert, MdRender} from './index';
 export const renderUList = function(lines:string[],index:number):RenderInfo|null{
 	var line = lines[index];
@@ -16,6 +17,8 @@ export const renderUList = function(lines:string[],index:number):RenderInfo|null
 					break;
 				++index;
 			}
+			// let span = DOMUtil.createDOM('span','md-hide',)
+			// item.append()
 			item.append(...convert(arr));
 			list.appendChild(item);
 		}

@@ -20,10 +20,13 @@ interface IEditor{
 	setInlineFormat(format:InlineFormat):void
 	setBlockFormat(format:BlockFormat):void
 	getRoot():HTMLDivElement
-	alignTableItem(align:string)
+	alignTableItem(align:string):void
 	getDescription():string
 	alterTable(row:number,col:number):void
 	createTable(row:number,col:number):void
+	insertNewLineBefore():void
+	insertNewLineAfter():void
+	promoteLine():void
 }
 
 

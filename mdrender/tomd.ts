@@ -46,7 +46,7 @@ export const listToMd = function(node:HTMLElement):string[]{
 		let childs = blockToMd(node as HTMLElement)
 		for(let i=0;i<childs.length;i++){
 			if(i==0)
-				ret.push((tag=='OL'? idx + '. ' : '+ ') + childs[i])
+				ret.push((tag=='OL'? (idx+1) + '. ' : '+ ') + childs[i])
 			else
 				ret.push('   ' + childs[i])
 		}
@@ -64,14 +64,15 @@ export const quoteToMd = function(node:HTMLElement):string[]{
 export const blockToMd = function(node:HTMLElement):string[] {
 	let ret:string[] = []
 	for(const child of node.childNodes){
+		console.log(child)
 		if(child.nodeType==3) ret.push((child as Text).nodeValue)
-		let html = node as HTMLElement
+		let html = child as HTMLElement
 		let tag = html.tagName
 		if(tag=='PRE') ret.push(...preToMd(html))
 		else if(tag=='UL'||tag=='OL') ret.push(...listToMd(html))
 		else if(tag=='TABLE') ret.push(...tableToMd(html as HTMLTableElement))
 		else if(tag=='BLOCKQUOTE') ret.push(...quoteToMd(html))
-		else ret.push(lineToMd(node))
+		else ret.push(lineToMd(html))
 	}
 	return ret
 }

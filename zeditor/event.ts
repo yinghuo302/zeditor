@@ -41,14 +41,13 @@ export class EventCenter{
 
 	//  table,ul,ol,blockquote,pre
 	static enterHandler(editor:IEditor,e:KeyboardEvent){
+		e.preventDefault()
 		var cursor = getCursor();
 		var line_node = DOMUtil.closestParent(cursor.node,'md-line');
 		let tagName = line_node.tagName
-		if(tagName=='PRE') return
-		e.preventDefault()
 		const mdtext = MdRender.toMd(line_node);
 		const offset = getOffset(line_node,cursor)
-		let line = renewLineWithEnter(mdtext.substring(0,offset))
+		let line = renewLine(line_node,offset)
 		tagName = line.tagName
 		line_node.replaceWith(line)
 		if(tagName=='TABLE')
