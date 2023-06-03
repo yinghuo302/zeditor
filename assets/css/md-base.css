@@ -41,5 +41,5 @@ body {
 	list-style:decimal !important;
 }
 .md-root ul{
-	list-style: circle !important;
+	list-style: disc !important;
 }

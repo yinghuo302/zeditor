@@ -91,14 +91,12 @@ export class ZEditor implements IEditor {
 		}
 	}
 	alterTable(range:Range,row: number, col: number) {
-		console.log(range)
 		if (range.startContainer != range.endContainer) return;
 		let table = DOMUtil.closestParents(range.startContainer,
 			(node: HTMLElement) => node.tagName == 'TABLE')
 		if (table) updateTable(table as HTMLTableElement, row, col)
 	}
 	createTable(range:Range,row: number, col: number) {
-		console.log(range)
 		if (range.startContainer != range.endContainer) return;
 		let line_node = DOMUtil.getLineNode(range.startContainer)
 		let table = document.createElement('table')

@@ -54,7 +54,6 @@ export namespace EventCenter {
 	function enterHandler(editor: IEditor, e: KeyboardEvent) {
 		e.preventDefault()
 		var cursor = getCursor();
-		console.log(cursor)
 		// 更新旧行
 		var line_node = DOMUtil.getLineNode(cursor.node);
 		if (!line_node) return
