@@ -10,9 +10,9 @@ interface ICursor{
 
 interface IEditor{
 	root_ele:HTMLDivElement;
+	state:number	
 	old_cursor:ICursor;
 	tem_cursor:ICursor;
-	range:Range
 	setValue(mdtext:string):void
 	getMd():string
 	getOutline():IOutLine[]
@@ -21,9 +21,9 @@ interface IEditor{
 	setBlockFormat(format:BlockFormat):void
 	getRoot():HTMLDivElement
 	alignTableItem(align:string):void
-	getDescription():string
-	alterTable(row:number,col:number):void
-	createTable(row:number,col:number):void
+	alterTable(range:Range,row:number,col:number):void
+	createTable(range:Range,row:number,col:number):void
+	deleteTable():void
 	insertNewLineBefore():void
 	insertNewLineAfter():void
 	promoteLine():void

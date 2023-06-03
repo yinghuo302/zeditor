@@ -34,16 +34,6 @@ export const renderTag = (mdtext:string,left:number,right:number):Node[] =>{
             }
         }
         for(const tag of tags){
-			// if(left+tag.length>=right) break;
-			// if(mdtext.substring(left,left+tag.length)!=tag) continue;
-			// p = findMatchTag(mdtext,tag,left+tag.length+1,right);
-			// if (p !== -1) {
-			// 	nodes.push(document.createTextNode(mdtext.slice(pos, left)))
-			// 	nodes.push(getNode(mdtext,left+tag.length,p,tag))
-			// 	pos = p + tag.length;
-			// 	left = pos - 1;
-			// 	break
-			// }
 			let info = renderSym(mdtext,left,right,tag)
 			if(!info) continue;
 			nodes.push(document.createTextNode(mdtext.slice(pos,left)))
@@ -115,31 +105,4 @@ const renderSym = function(mdtext,begin:number,end:number,tag:string):RenderInfo
 		}
 	}
 	return {val:span,end:p+tag.length}
-}
-const getNode = function(mdtext:string,begin:number,end:number,tagName:string):HTMLElement{
-	let span = DOMUtil.createDOM('span','md-node','')
-	let l_hide = DOMUtil.createDOM('span','md-hide',tagName)
-	let r_hide = DOMUtil.createDOM('span','md-hide',tagName)
-	switch (tagName){
-		case "`":{
-			let content = mdtext.substring(begin,end)
-			let code = DOMUtil.createDOM('code','',content)
-			span.append(l_hide,code,r_hide)
-			break;
-		}
-		case "$":{
-			let content = mdtext.substring(begin,end)
-			let l_hide = DOMUtil.createDOM('span','md-hide',`$${content}`)
-			let node = DOMUtil.createDOM('span','md-ignore','')
-			katex.render(content,node,{displayMode:false,output:"html"})
-			let r_hide = DOMUtil.createDOM('span','md-hide','$')
-			span.append(l_hide,node,r_hide); break;
-		}
-		default:{
-			let node = DOMUtil.createDOM(tag_mp[tagName],class_mp[tagName],'')
-			node.append(...renderTag(mdtext,begin,end))
-			span.append(l_hide,node,r_hide)
-		}
-	}
-	return span
 }

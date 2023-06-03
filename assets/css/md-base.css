@@ -18,7 +18,7 @@ body {
 	outline: none;
 }
 
-.md-hide {
+.md-hide,.md-zero {
 	width: 0;
     overflow: hidden;
     display: inline-block;

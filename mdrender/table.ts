@@ -1,3 +1,4 @@
+import { DOMUtil } from "../utils";
 import { MdRender } from "./index";
 const aligns = ["left","left","right","center"];
 export const renderTable = function(lines:string[],index:number):RenderInfo|null{
@@ -36,9 +37,9 @@ export const renderTable = function(lines:string[],index:number):RenderInfo|null
 			if(line.charAt(cur-1)!='\\'){
 				let item:HTMLElement;
 				if(row==0)
-					item = document.createElement('th');
+					item = DOMUtil.createDOM('th','md-block');
 				else{
-					item = document.createElement('td');
+					item = DOMUtil.createDOM('td','md-block');
 					(item as HTMLTableCellElement).align = table.rows[0].cells[col].align;
 				}
 				++col;

@@ -1,10 +1,7 @@
 const set = new Set<string>(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'])
 export const toMd = function (node: HTMLElement): string {
-	if(set.has(node.tagName)) return lineToMd(node)
 	return blockToMd(node).join('\n')
 }
-
-
 
 export const tableToMd = function (node: HTMLTableElement): string[] {
 	let ths = node.querySelectorAll('th')
@@ -34,53 +31,56 @@ export const tableToMd = function (node: HTMLTableElement): string[] {
 
 export const preToMd = function (node: HTMLElement): string[] {
 	let ret = []
-	ret.push( "```" + node.className)
+	ret.push("```" + node.className)
 	for (const child of node.childNodes)
 		ret.push((child as HTMLPreElement).innerText)
+	ret.push("```")
 	return ret
 }
 
-export const listToMd = function(node:HTMLElement):string[]{
+export const listToMd = function (node: HTMLElement): string[] {
 	let tag = node.tagName, ret = []
-	node.childNodes.forEach((node,idx)=>{
+	node.childNodes.forEach((node, idx) => {
 		let childs = blockToMd(node as HTMLElement)
-		for(let i=0;i<childs.length;i++){
-			if(i==0)
-				ret.push((tag=='OL'? (idx+1) + '. ' : '+ ') + childs[i])
-			else
-				ret.push('   ' + childs[i])
+		for (let i = 0; i < childs.length; i++) {
+			if (i == 0) ret.push((tag == 'OL' ? (idx + 1) + '. ' : '+ ') + childs[i])
+			else ret.push('   ' + childs[i])
 		}
 	})
 	return ret
 }
 
-export const quoteToMd = function(node:HTMLElement):string[]{
-	let childs = blockToMd(node)
-	for(let i=0;i<childs.length;i++)
-		childs[i] = '> ' + childs[i]
-	return childs
-}
-
-export const blockToMd = function(node:HTMLElement):string[] {
-	let ret:string[] = []
-	for(const child of node.childNodes){
-		console.log(child)
-		if(child.nodeType==3) ret.push((child as Text).nodeValue)
-		let html = child as HTMLElement
-		let tag = html.tagName
-		if(tag=='PRE') ret.push(...preToMd(html))
-		else if(tag=='UL'||tag=='OL') ret.push(...listToMd(html))
-		else if(tag=='TABLE') ret.push(...tableToMd(html as HTMLTableElement))
-		else if(tag=='BLOCKQUOTE') ret.push(...quoteToMd(html))
-		else ret.push(lineToMd(html))
-	}
+export const quoteToMd = function (node: HTMLElement): string[] {
+	let ret = []
+	node.childNodes.forEach((child) => {
+		let lines = blockToMd(child as HTMLElement)
+		for (let i = 0; i < lines.length; i++)
+			ret.push('> ' + lines[i])
+	})
 	return ret
 }
 
-export const lineToMd = function(node:HTMLElement):string{
+export const blockToMd = function (node: HTMLElement): string[] {
+	if (node.nodeType == 3) return [node.nodeValue]
+	let tag = node.tagName
+	if (node.classList.contains('md-line') || set.has(tag)) return [lineToMd(node)]
+	if (tag == 'PRE') return preToMd(node)
+	if (tag == 'TABLE') return tableToMd(node as HTMLTableElement)
+	if (tag == 'UL' || tag == 'OL') return listToMd(node)
+	if (tag == 'BLOCKQUOTE') return quoteToMd(node)
+	if (tag=='HR') return ["***"]
+	let ret = []
+	node.childNodes.forEach((ele) => {
+		ret.push(...blockToMd(ele as HTMLElement))
+	})
+	return ret
+}
+
+export const lineToMd = function (node: HTMLElement): string {
 	if (node.nodeType == 3) return node.nodeValue
 	let html = node as HTMLElement
 	let tag = html.tagName
+	if (tag == 'PRE') return node.innerText
 	if (html.classList.contains("katex")) return ""
 	if (tag == 'IMG') return ""
 	if (tag == 'A') return ""

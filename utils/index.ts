@@ -1,16 +1,5 @@
 export namespace DOMUtil{
 	
-	export const closestParent = function(node:Node,className:string):null|HTMLElement{
-		if (!node)  return null;
-		if (node.nodeType === 3) node = node.parentElement as HTMLElement;
-		let e = node as HTMLElement;
-		while(e){
-			if(className==''||e.classList.contains(className)) return e;
-			e = e.parentElement as HTMLElement
-		}
-		return null
-	}
-
 	export const closestParents = function(node:Node,check:(HTMLElement)=>boolean):null|HTMLElement{
 		if (!node)  return null;
 		if (node.nodeType === 3) node = node.parentElement as HTMLElement;
@@ -43,19 +32,12 @@ export namespace DOMUtil{
 		if(className!='') img.className = className
 		return img
 	}
-	export const  nextNode = function(node:Node):null|HTMLElement{
-		return null
-	}
-	export const  previousNode =function (node:Node):HTMLElement{
-		return null
-	}
 
 	export const getLineNode = function(node:Node) :HTMLElement{
-		let parent = node.parentElement as HTMLElement
-		while(parent&&parent.tagName!='li'&&!parent.classList.contains('md-root')){
-			if((node as HTMLElement).classList.contains('md-line')) return node as HTMLElement
+		let parent = node.parentNode as HTMLElement
+		while(parent.nodeType!=1||!parent.classList.contains('md-block')){
 			node = parent
-			parent = parent.parentElement as HTMLElement
+			parent = parent.parentNode as HTMLElement
 		}
 		return node as HTMLElement
 	}

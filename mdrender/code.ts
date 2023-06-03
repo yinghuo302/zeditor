@@ -1,9 +1,10 @@
 import hljs from "highlightjs";
+import { DOMUtil } from "../utils";
 export const renderCode = (lines:string[],index:number):RenderInfo|null =>{
 	var line = lines[index];
 	if(line.slice(0,3)==='```'){
-		var pre = document.createElement('pre');
-		pre.className = line.slice(3).trim();
+		var pre = DOMUtil.createDOM('pre','md-block');
+		pre.setAttribute('data-lang',line.slice(3).trim())
 		++index;
 		line = lines[index];
 		while(index<lines.length){

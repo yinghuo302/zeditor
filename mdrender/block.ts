@@ -4,9 +4,10 @@ export const renderUList = function(lines:string[],index:number):RenderInfo|null
 	var line = lines[index];
 	if(isUl(line)){
 		var list = document.createElement('ul');
+		list.setAttribute('data-offset','2')
 		while(index<lines.length&&isUl(line)){
 			let arr:string[] = [];
-			var item = document.createElement('li');
+			var item = DOMUtil.createDOM('li','md-block')
 			arr.push(line.slice(2));
 			++index;
 			while(index<lines.length){
@@ -17,8 +18,6 @@ export const renderUList = function(lines:string[],index:number):RenderInfo|null
 					break;
 				++index;
 			}
-			// let span = DOMUtil.createDOM('span','md-hide',)
-			// item.append()
 			item.append(...convert(arr));
 			list.appendChild(item);
 		}
@@ -28,12 +27,13 @@ export const renderUList = function(lines:string[],index:number):RenderInfo|null
 }
 export const renderOList = function(lines:string[],index:number):RenderInfo|null{
 	var line = lines[index];
-	if(isOl(line)!=0){
+	let pos:number;
+	if((pos=isOl(line))!=0){
 		var list = document.createElement('ol');
-		let pos:number;
+		list.setAttribute('data-offset',pos.toString())
 		while(index<lines.length&&(pos=isOl(line))!=0){
 			let arr:string[] = [];
-			var item = document.createElement('li');
+			var item =  DOMUtil.createDOM('li','md-block')
 			arr.push(line.slice(pos));
 			++index;
 			while(index<lines.length){
@@ -54,7 +54,8 @@ export const renderOList = function(lines:string[],index:number):RenderInfo|null
 export const renderQuote = function(lines:string[],index:number):RenderInfo|null{
 	var line = lines[index];
 	if(line.charAt(0)=='>' &&(line.charCodeAt(1)==32||line.charCodeAt(1)==160)){
-        var node = document.createElement('blockquote');
+        var node = DOMUtil.createDOM('blockquote','md-block');
+		node.setAttribute('data-offset','2')
 		var arr:string[] = [];
 		arr.push(line.substring(2));
 		++index;
