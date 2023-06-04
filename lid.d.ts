@@ -13,6 +13,7 @@ interface IEditor{
 	state:number	
 	old_cursor:ICursor;
 	tem_cursor:ICursor;
+	need_update:Set<HTMLElement>
 	setValue(mdtext:string):void
 	getMd():string
 	getOutline():IOutLine[]

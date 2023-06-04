@@ -33,7 +33,6 @@ export const cursorCtr = (editor: IEditor, left: boolean = true) => {
 		setCursor(editor, text, text.nodeValue.length)
 		focus(editor)
 	}
-	if (cursor.node.nodeType != 3) return
 	if (cursor.node != editor.old_cursor?.node ||
 		cursor.offset <= 1 || cursor.offset == cursor.node.nodeValue.length) {
 		hideTag(editor)
@@ -80,8 +79,7 @@ export const setCursorByOffset = function (editor: IEditor, line_node: HTMLEleme
 		}
 		if (type == DOMUtil.IGNORE_NODE) return
 		if (!node.hasChildNodes()) {
-			node.appendChild(document.createElement('br'))
-			setCursor(editor, node.firstChild, 0)
+			setCursor(editor, node, 0)
 			flag = true
 		} else
 			node.childNodes.forEach(dfs)
@@ -92,6 +90,7 @@ export const setCursorByOffset = function (editor: IEditor, line_node: HTMLEleme
 
 export const showTag = function (cursor: ICursor) {
 	let nodes = getNodeNeedExpand(cursor)
+	console.log(nodes)
 	nodes.forEach((node) => {
 		var tem = node.firstElementChild;
 		if (tem && tem.className == 'md-hide')

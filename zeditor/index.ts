@@ -14,11 +14,13 @@ export class ZEditor implements IEditor {
 	old_cursor: ICursor;
 	tem_cursor: ICursor;
 	state: number
+	need_update:Set<HTMLElement>
 	constructor(ele: HTMLDivElement) {
 		this.root_ele = ele
 		this.root_ele.classList.add('md-root', 'md-block');
 		this.root_ele.contentEditable = 'true';
 		this.state = 0
+		this.need_update = new Set<HTMLElement>()
 		EventCenter.listen(this)
 	}
 	// 将编辑器的内容设置为mdtext并进行渲染
@@ -75,7 +77,6 @@ export class ZEditor implements IEditor {
 		range.insertNode(text_node)
 	}
 	setBlockFormat(format: BlockFormat) {
-		this.state = 2
 		let range = document.getSelection().getRangeAt(0)
 		if (range.startContainer != range.endContainer) return
 		let line_node = DOMUtil.getLineNode(range.startContainer)

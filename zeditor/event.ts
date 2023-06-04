@@ -8,7 +8,7 @@ export namespace EventCenter {
 		editor.root_ele.addEventListener('keyup', keyupHandler.bind(null, editor));
 		editor.root_ele.addEventListener('click', clickHandler.bind(null, editor));
 		editor.root_ele.addEventListener('keydown', keydownHandler.bind(null, editor));
-		setInterval(renewDaemon,1000,editor)
+		setInterval(renewDaemon,1200,editor)
 	}
 	function keyupHandler(editor: IEditor, e: KeyboardEvent) {
 		if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowLeft')
@@ -22,9 +22,9 @@ export namespace EventCenter {
 	function keydownHandler(editor: IEditor, e: KeyboardEvent) {
 		if (e.key === 'Enter')
 			enterHandler(editor, e);
-		if (e.ctrlKey) {
-			if (e.key == '[') editor.promoteLine()
-			else if (e.key == '1' || e.key == '2' || e.key == '3'
+		if (e.key == '[') editor.promoteLine()
+		if (e.ctrlKey&&e.altKey) {
+			if (e.key == '1' || e.key == '2' || e.key == '3'
 				|| e.key == '4' || e.key == '5' || e.key == '6')
 				editor.setHeading(Number(e.key))
 			else if (e.key == 'b')
@@ -33,22 +33,13 @@ export namespace EventCenter {
 				editor.setInlineFormat("*")
 			} else if (e.key == 'k')
 				editor.setInlineFormat("link")
+			else if (e.key == 'p')
+				editor.setInlineFormat("img")
+			else if (e.key == 'm')
+				editor.setInlineFormat("$")
 			else if (e.key == '`')
 				editor.setInlineFormat("`")
 		}
-	}
-	function deleteHandler(editor: IEditor, e: KeyboardEvent) {
-		e.preventDefault()
-		let cursor = getCursor();
-		var line_node = DOMUtil.getLineNode(cursor.node);
-		let offset = getOffset(line_node, cursor);
-		let str = MdRender.toMd(line_node)
-		if (offset != 0) offset -= 1
-		let mdtext = `${str.substring(0, offset)}${str.substring(offset + 1)}`
-		let new_line = MdRender.renderLine(mdtext)
-		line_node.replaceWith(new_line)
-		setCursorByOffset(editor, new_line, offset)
-		focus(editor)
 	}
 
 	function enterHandler(editor: IEditor, e: KeyboardEvent) {
@@ -79,6 +70,10 @@ export namespace EventCenter {
 	
 	function inputHandler(editor: IEditor, e: InputEvent) {
 		editor.state = 2;
+		var cursor = getCursor();
+		if (!cursor) return;
+		let line_node = DOMUtil.getLineNode(cursor.node)
+		editor.need_update.add(line_node)
 	}
 
 	function renewDaemon(editor: IEditor) {
@@ -87,10 +82,16 @@ export namespace EventCenter {
 		editor.state = 1;
 		if (!cursor) return;
 		var line_node = DOMUtil.getLineNode(cursor.node);
+		if(editor.need_update.has(line_node)) editor.need_update.delete(line_node)
 		const offset = getOffset(line_node, cursor)
 		let new_node = renewLine(line_node)[0];
 		line_node.replaceWith(new_node);
 		setCursorByOffset(editor, new_node, offset);
+		editor.need_update.forEach((node)=>{
+			let new_node = renewLine(node)[0];
+			node.replaceWith(new_node);
+		})
+		editor.need_update.clear();
 		focus(editor);
 	}
 }
