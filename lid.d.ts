@@ -21,7 +21,7 @@ interface IEditor{
 	setInlineFormat(format:InlineFormat):void
 	setBlockFormat(format:BlockFormat):void
 	getRoot():HTMLDivElement
-	alignTableItem(align:string):void
+	alignTableItem(align:TableAlignType):void
 	alterTable(range:Range,row:number,col:number):void
 	createTable(range:Range,row:number,col:number):void
 	deleteTable():void
@@ -48,4 +48,4 @@ interface LineInfo{
 
 type InlineFormat = "**"|"*"|"***"|"~"|"`"|"$"|"link"|"img"
 type BlockFormat = "ol"|"ul"|"code"|"math"|"quote"
-type TableAlignType = ""
+type TableAlignType = "left"|"right"|"center"

@@ -21,7 +21,7 @@ export const renderTag = (mdtext:string,left:number,right:number):Node[] =>{
     while(left<right){
         var ch = mdtext.charAt(left);
         if (ch == '\\') {
-            if (md_keyword.indexOf(mdtext.charAt(left + 1)) != -1){
+            if (mdtext.length>left+1&&md_keyword.indexOf(mdtext.charAt(left + 1)) != -1){
 				let text1 = document.createTextNode(mdtext.slice(pos,left))
 				let hide = DOMUtil.createDOM('span','md-hide','\\')
 				let text2 = document.createTextNode(mdtext.charAt(left+1))

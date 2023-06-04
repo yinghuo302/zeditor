@@ -39,6 +39,8 @@ export namespace EventCenter {
 				editor.setInlineFormat("$")
 			else if (e.key == '`')
 				editor.setInlineFormat("`")
+			else if (e.key == 'd')
+				editor.deleteTable()
 		}
 	}
 

@@ -111,7 +111,7 @@ export class ZEditor implements IEditor {
 		table.innerHTML = str
 		line_node.insertAdjacentElement('afterend', table)
 	}
-	alignTableItem(align: string) {
+	alignTableItem(align: TableAlignType) {
 		let range = document.getSelection().getRangeAt(0)
 		let tableCell = DOMUtil.closestParents(range.startContainer,
 			(node: HTMLElement) => node.tagName == 'TH' || node.tagName == 'TD')
