@@ -1,32 +1,24 @@
 const set = new Set<string>(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'])
+const mp = new Map([["","---|"],["right","---:|"],["left",":----|"],["center",":----:|"]])
 export const toMd = function (node: HTMLElement): string {
 	return blockToMd(node).join('\n')
 }
 
 export const tableToMd = function (node: HTMLTableElement): string[] {
-	let ths = node.querySelectorAll('th')
-	let trs = node.querySelectorAll('tr')
 	let ret: string[] = []
-	let md = '|';
-	for (let th of ths)
-		md += ` ${th.textContent} |`;
-	ret.push(md)
-	md = '|';
-	for (let i = 0; i < ths.length; i++) {
-		if (ths.item(i).align == 'left') md += `:---|`;
-		else if (ths.item(i).align == 'right') md += `---:|`
-		else md += `---|`
-	}
-	ret.push(md);
-	for (let tr of trs) {
-		let tds = tr.querySelectorAll('td');
-		md = '|';
-		for (let td of tds) {
-			md += ` ${td.textContent} |`;
-		}
+	for(let i=0;i<node.rows.length;i++){
+		let md = '|';
+		for(let j=0;j<node.rows[i].cells.length;j++)
+			md += `${node.rows[i].cells[j].textContent}|`
 		ret.push(md)
+		if(i==0){
+			md = "|"
+			for(let j=0;j<node.rows[i].cells.length;j++)
+				md += mp.get(node.rows[i].cells[j].align)
+			ret.push(md)
+		}
 	}
-	return ret;
+	return ret
 }
 
 export const preToMd = function (node: HTMLElement): string[] {
@@ -61,6 +53,7 @@ export const quoteToMd = function (node: HTMLElement): string[] {
 }
 
 export const blockToMd = function (node: HTMLElement): string[] {
+	console.log(node)
 	if (node.nodeType == 3) return [node.nodeValue]
 	let tag = node.tagName
 	if (node.classList.contains('md-line') || set.has(tag)) return [lineToMd(node)]
