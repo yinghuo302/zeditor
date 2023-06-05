@@ -12,11 +12,12 @@ export const renderUList = function(lines:string[],index:number):RenderInfo|null
 			++index;
 			while(index<lines.length){
 				line = lines[index];
+				++index;
+				if(line.length==0) continue
 				if(line.slice(0,3)==='   ')
 					arr.push(line.slice(3));
 				else
 					break;
-				++index;
 			}
 			item.append(...convert(arr));
 			list.appendChild(item);
@@ -38,11 +39,12 @@ export const renderOList = function(lines:string[],index:number):RenderInfo|null
 			++index;
 			while(index<lines.length){
 				line = lines[index];
+				++index;
+				if(line.length==0) continue
 				if(line.slice(0,3)==='   ')
 					arr.push(line.slice(3));
 				else
 					break;
-				++index;
 			}
 			item.append(...convert(arr));
 			list.appendChild(item);

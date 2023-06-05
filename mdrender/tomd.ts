@@ -53,7 +53,6 @@ export const quoteToMd = function (node: HTMLElement): string[] {
 }
 
 export const blockToMd = function (node: HTMLElement): string[] {
-	console.log(node)
 	if (node.nodeType == 3) return [node.nodeValue]
 	let tag = node.tagName
 	if (node.classList.contains('md-line') || set.has(tag)) return [lineToMd(node)]
