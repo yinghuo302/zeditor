@@ -96,6 +96,7 @@ export namespace EventCenter {
 		line_node.replaceWith(new_node);
 		setCursorByOffset(editor, new_node, offset);
 		editor.need_update.forEach((node) => {
+			if(!editor.root_ele.contains(node)) return
 			let new_node = renewLine(node)[0];
 			node.replaceWith(new_node);
 		})
