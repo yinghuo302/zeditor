@@ -90,7 +90,6 @@ export const setCursorByOffset = function (editor: IEditor, line_node: HTMLEleme
 
 export const showTag = function (cursor: ICursor) {
 	let nodes = getNodeNeedExpand(cursor)
-	console.log(nodes)
 	nodes.forEach((node) => {
 		var tem = node.firstElementChild;
 		if (tem && tem.className == 'md-hide')
