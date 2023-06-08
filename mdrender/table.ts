@@ -25,7 +25,6 @@ export const renderTable = function (lines: string[], index: number): RenderInfo
 		let prev: number = 1, cur: number = 1;
 		let tr = document.createElement('tr');
 		while (cur < line.length) {
-			console.log(cur)
 			let col = 0;
 			while (line.charAt(cur) != '|') ++cur;
 			if (line.charAt(cur - 1) != '\\') {
@@ -35,7 +34,6 @@ export const renderTable = function (lines: string[], index: number): RenderInfo
 					item = DOMUtil.createDOM('td', 'md-block');
 					(item as HTMLTableCellElement).align = table.rows[0].cells[col].align;
 				}
-				item.className = 'md-line';
 				item.append(MdRender.renderLine(line.slice(prev, cur)))
 				tr.appendChild(item);
 				++col; prev = cur + 1;
